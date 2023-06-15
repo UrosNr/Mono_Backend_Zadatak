@@ -1,0 +1,36 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.paging{
+    display:flex;
+    border-top:1px solid black;
+    height:30px;
+    text-align:center;
+}
+
+.current-page {
+    padding: 5px;
+    border: 1px solid grey;
+    border-radius: 4px;
+    padding-top: 1px;
+}
+
+.arrow {
+    height: 25px;
+}

@@ -1,0 +1,103 @@
+﻿@using Project.Service.ViewModels;
+
+@{
+    ViewData["Title"] = "Model";
+}
+
+@model PaginatedList<VehicleModelVm>
+
+<h2>Model Administration</h2>
+
+<div id="loadingModal" class="modal" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("GetVehicleModelsQuery", "VehicleModel", FormMethod.Get))
+{
+    <div class="d-flex">
+        <div class="d-flex">
+            @Html.Label("Search","Search" ,new { @class = "form-label mt-1 me-1" })
+            @Html.TextBox("searchFilter", null, new { @class = "form-control" })
+        </div>
+        <div class="d-flex ms-2">
+            @Html.Label("Sort","Sort", new { @class = "form-label mt-1 me-1" })
+            @Html.DropDownList("sortFilter", new SelectList(new[] { "asc", "desc" }), new { @class = "form-select" })
+        </div>
+        <button type="submit" class="btn btn-primary ms-1">Search</button>
+    </div>
+}
+@if (Model.Items.Count < 1)
+{
+    <h4 class="my-2">No records found</h4>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Abbreviation</th>
+                <th>Make</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var vm in Model.Items)
+            {
+                <tr>
+                    <td>@vm.Id</td>
+                    <td>@vm.Name</td>
+                    <td>@vm.Abrv</td>
+                    <td>@vm.Make.Name</td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" asp-controller="VehicleModel" asp-action="Edit" asp-route-id="@vm.Id">Edit</a> |
+                        @Html.ActionLink("Delete", "Delete", new { id = vm.Id }, new { onclick = "return confirm('Are you sure you want to delete this vehicle make?');", @class = "btn btn-danger btn-sm" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="paging mt-2">
+        <div class="me-auto">
+            Count: @Model.TotalCount
+        </div>
+        <a class="btn btn-secondary ms-auto mt-1 pt-0 @(!Model.HasPreviousPage ? "disabled" : "")"
+           href="?page=@(Model.PageIndex - 1)">
+            <img class="arrow" src="/img/leftArrow.png">
+        </a>
+        <div class="current-page mx-1 mt-1">
+            @Model.PageIndex
+        </div>
+        <a class="btn btn-secondary me-auto mt-1 pt-0 @(!Model.HasNextPage ? "disabled" : "")"
+           href="?page=@(Model.PageIndex + 1)">
+            <img class="arrow" src="/img/rightArrow.png">
+        </a>
+        <div class="ms-auto">
+            Total Pages: @Model.TotalPages
+        </div>
+    </div>
+}
+<a asp-controller="VehicleModel" asp-action="Create" class="btn btn-primary">Create New</a>
+
+@section scripts {
+    <script>
+        $('form').submit(function () {
+            $('#loadingModal').modal('show');
+        });
+
+        $(window).on('load', function () {
+            $('#loadingModal').modal('hide');
+        });
+    </script>
+}
